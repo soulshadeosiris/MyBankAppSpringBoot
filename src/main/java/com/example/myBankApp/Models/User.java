@@ -50,11 +50,14 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @OneToMany(mappedBy = "user")
+    private Account account;
+
     public User() {
 
     }
 
-    public User(String firstName, String lastName, String email, String password, String phoneNumber, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(String firstName, String lastName, String email, String password, String phoneNumber, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime updatedAt, Account account) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -63,6 +66,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.account = account;
     }
 
     public long getId() {
@@ -131,5 +135,13 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }
