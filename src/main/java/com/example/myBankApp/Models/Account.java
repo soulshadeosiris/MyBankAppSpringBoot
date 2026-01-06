@@ -1,8 +1,11 @@
 package com.example.myBankApp.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Account {
@@ -13,6 +16,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @Column(nullable = false, unique = false)
@@ -35,16 +39,26 @@ public class Account {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Card> cards;
+
     public Account() {
 
     }
 
-    public Account(User user, long accountNumber, double balance, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Account(User user, long accountNumber, double balance, LocalDateTime createdAt, LocalDateTime updatedAt, List<Transaction> transactions, List<Card> cards) {
         this.user = user;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.transactions = transactions;
+        this.cards = cards;
     }
 
     public long getId() {
@@ -85,5 +99,21 @@ public class Account {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

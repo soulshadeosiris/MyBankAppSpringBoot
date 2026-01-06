@@ -4,7 +4,9 @@ import com.example.myBankApp.Models.User;
 import com.example.myBankApp.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -43,5 +45,31 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
+    public String registerUser(String firstName, String lastName, String email,
+                               String password, String phoneNumber, LocalDate dob) {
+        if (findByEmail(email).isPresent()) {
+            return "Email is already registered";
+        }
+
+        User newUser = new User();
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setEmail(email);
+        newUser.setPassword(password);
+        newUser.setPhoneNumber(phoneNumber);
+        newUser.setDateOfBirth(dob);
+
+        userRepository.save(newUser);
+
+        return "Sign up successful! Welcome, " + firstName;
+    }
+
+    public User login(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password)
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+    }
 }

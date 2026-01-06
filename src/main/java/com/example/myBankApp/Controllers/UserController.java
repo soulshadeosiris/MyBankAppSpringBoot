@@ -1,11 +1,14 @@
 package com.example.myBankApp.Controllers;
 
+import com.example.myBankApp.DTOs.LoginRequest;
 import com.example.myBankApp.Services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.myBankApp.Models.User;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -17,8 +20,9 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        userService.createUser(user);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{userId}")
@@ -41,5 +45,8 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
-
+    @PostMapping("/login")
+    public User login(@RequestBody LoginRequest request) {
+        return userService.login(request.getEmail(), request.getPassword());
+    }
 }

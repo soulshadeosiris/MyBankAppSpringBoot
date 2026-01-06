@@ -1,5 +1,7 @@
 package com.example.myBankApp.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -51,13 +53,14 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user")
-    private Account account;
+    @JsonManagedReference
+    private List<Account> account;
 
     public User() {
 
     }
 
-    public User(String firstName, String lastName, String email, String password, String phoneNumber, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime updatedAt, Account account) {
+    public User(String firstName, String lastName, String email, String password, String phoneNumber, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime updatedAt, List<Account> account) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -137,11 +140,11 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public Account getAccount() {
+    public List<Account> getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(List<Account> account) {
         this.account = account;
     }
 }

@@ -1,7 +1,9 @@
 package com.example.myBankApp.Services;
 
 import com.example.myBankApp.Models.Account;
+import com.example.myBankApp.Models.User;
 import com.example.myBankApp.Repositories.AccountRepository;
+import com.example.myBankApp.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,13 +12,29 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository) {
         this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
     }
 
-    public Account createAccount(Account account) {
+    public Account createAccount(Long userId, Account account) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        account.setUser(user);
+        account.setAccountNumber(generateUniqueAccountNumber());
+        if (account.getBalance() < 0) account.setBalance(0);
+
         return accountRepository.save(account);
+    }
+
+    private long generateUniqueAccountNumber() {
+        long number;
+        do {
+            number = (long)(Math.random() * 1_000_000_000L);
+        } while (accountRepository.existsByAccountNumber(number));
+        return number;
     }
 
     public Account getAccountById(Long id) {
@@ -82,5 +100,9 @@ public class AccountService {
         return updatedBalance;
     }
 
+
+    public List<Account> getAllAccountsByUser(Long userId) {
+        return accountRepository.findByUserId(userId);
+    }
 
 }

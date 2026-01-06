@@ -1,5 +1,6 @@
 package com.example.myBankApp.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonBackReference
     private Account account;
 
     @Column(nullable = false)
@@ -48,6 +50,7 @@ public class Card {
     public void wasUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
     }
+
 
     public Card() {
 
